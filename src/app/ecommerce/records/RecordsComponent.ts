@@ -81,6 +81,12 @@ export class RecordsComponent {
   private readonly userService = inject(UserService);
   private readonly cdr = inject(ChangeDetectorRef);
 
+  // Function to compare values in the select
+  compareFn(option1: any, option2: any): boolean {
+    // Compare the numerical values of the options
+    return option1 && option2 ? option1 === option2 : option1 === option2;
+  }
+
   constructor() {
     // Load initial data
     this.getRecords();

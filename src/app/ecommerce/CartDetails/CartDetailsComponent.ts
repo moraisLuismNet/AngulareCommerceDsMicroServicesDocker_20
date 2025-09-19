@@ -105,7 +105,7 @@ export class CartDetailsComponent {
   // Method to extract the group name from several possible locations
   private extractGroupName(detail: any): string {
     if (!detail) return 'Sin grupo';
-    
+
     // List of possible group name locations
     const possibleGroupPaths = [
       detail.groupName,
@@ -119,12 +119,12 @@ export class CartDetailsComponent {
       detail.record?.group?.groupName,
       detail.record?.recordGroup?.groupName
     ];
-    
+
     // Find the first valid value
-    const groupName = possibleGroupPaths.find(name => 
+    const groupName = possibleGroupPaths.find(name =>
       name !== undefined && name !== null && name !== '' && name !== 'N/A'
     );
-    
+
     return groupName || 'Sin grupo';
   }
 
@@ -136,11 +136,11 @@ export class CartDetailsComponent {
         map((response: any) => {
           // Handle different response formats
           let details = [];
-          
+
           // Handle array response
           if (Array.isArray(response)) {
             details = response;
-          } 
+          }
           // Handle { $id: "1", $values: [...] } format
           else if (response && response.$values && Array.isArray(response.$values)) {
             details = response.$values;
@@ -149,7 +149,7 @@ export class CartDetailsComponent {
           else if (response && response.Items) {
             details = response.Items;
           }
-          
+
           // Process each detail to ensure it has all required fields
           return details.map((detail: any) => {
             // Extract group information from various possible locations
@@ -199,11 +199,11 @@ export class CartDetailsComponent {
         )
         .subscribe((record) => {
           if (!record) return;
-          
+
           const index = this.filteredCartDetails.findIndex(
             (d) => d.recordId === detail.recordId
           );
-          
+
           if (index !== -1) {
             const updatedDetail = {
               ...this.filteredCartDetails[index],
@@ -213,14 +213,14 @@ export class CartDetailsComponent {
               price: record.price || 0,
               imageRecord: record.imageRecord || record.photo || 'assets/img/placeholder.png'
             } as ExtendedCartDetail;
-            
+
             // Update the array immutably
             this.filteredCartDetails = [
               ...this.filteredCartDetails.slice(0, index),
               updatedDetail,
               ...this.filteredCartDetails.slice(index + 1)
             ];
-            
+
             // Update the cart details array as well for consistency
             const cartDetailIndex = this.cartDetails.findIndex(
               d => d.recordId === detail.recordId
@@ -382,8 +382,9 @@ export class CartDetailsComponent {
         .toPromise();
 
       this.showAlert('Order created successfully', 'success');
+      // Reset cart state after order creation
+      this.cartService.resetCart();
       this.loadCartDetails(this.currentViewedEmail);
-      this.cartService.updateCartNavbar(0, 0);
     } catch (error: any) {
       console.error('Full error:', error);
       const errorMsg = error.error?.message || 'Failed to create order';

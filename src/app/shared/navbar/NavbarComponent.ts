@@ -35,7 +35,7 @@ export class NavbarComponent {
   constructor() {
     // Initialize the current route
     this.currentRoute = this.router.url;
-    
+
     // afterNextRender runs once after the component is initially rendered
     afterNextRender(() => {
       // Any DOM-dependent initialization can go here
@@ -57,7 +57,7 @@ export class NavbarComponent {
       }
       this.cdr.markForCheck();
     });
-    
+
     // Subscribe to user role changes
     this.userService.role$.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -132,16 +132,6 @@ export class NavbarComponent {
       })
     ).subscribe();
 
-    // Subscription to cart item count and total
-    this.cartService.cartItemCount$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((count) => {
-        this.cartItemsCount = count;
-        this.cdr.markForCheck();
-      });
-
     // Subscription to cart total
     this.cartService.cartTotal$
       .pipe(
@@ -151,7 +141,7 @@ export class NavbarComponent {
         this.cartTotal = total;
         this.cdr.markForCheck();
       });
-    
+
     // Subscription to router events
     this.router.events
       .pipe(

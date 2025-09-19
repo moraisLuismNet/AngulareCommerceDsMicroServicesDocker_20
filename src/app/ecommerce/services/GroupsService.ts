@@ -83,16 +83,6 @@ export class GroupsService {
       
       // Add the file to FormData with the exact name 'Photo'
       formData.append('Photo', blob, group.photo.name);
-      
-      // Verify that the file has been added correctly
-      const file = formData.get('Photo');
-      console.log('[GroupsService] Attached file:', {
-        fileName: group.photo.name,
-        fileType: group.photo.type,
-        fileSize: group.photo.size,
-        formDataHasFile: file !== null,
-        formDataKeys: Array.from((formData as any).keys())
-      });
     }
     
     // Configure the minimum necessary headers
@@ -116,9 +106,8 @@ export class GroupsService {
       formData,
       httpOptions
     ).pipe(
-      tap(() => console.log('[GroupsService] Group successfully created')),
       catchError((error: HttpErrorResponse) => {
-        let errorMessage = 'Error al crear el grupo';
+        let errorMessage = 'Error creating group';
         
         // Extract error message from server if available
         if (error.error?.errors) {
@@ -126,7 +115,7 @@ export class GroupsService {
           const validationErrors = Object.entries(error.error.errors)
             .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : String(errors)}`)
             .join('; ');
-          errorMessage = `Error de validación: ${validationErrors}`;
+          errorMessage = `Validation error: ${validationErrors}`;
         } else if (error.error) {
           // Handling other types of server errors
           const serverError = error.error;
@@ -195,7 +184,7 @@ export class GroupsService {
           const validationErrors = Object.entries(error.error.errors)
             .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : String(errors)}`)
             .join('; ');
-          errorMessage = `Error de validación: ${validationErrors}`;
+          errorMessage = `Validation error: ${validationErrors}`;
         } else if (error.error) {
           // Handling other types of server errors
           const serverError = error.error;

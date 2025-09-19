@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, afterNextRender, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, inject, afterNextRender, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -30,6 +30,7 @@ export class GenresComponent {
   private readonly genresService = inject(GenresService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ViewChild('form') form!: NgForm;
   visibleError = false;
@@ -57,7 +58,7 @@ export class GenresComponent {
 
   getGenres() {
     this.genresService.getGenres().pipe(
-      takeUntilDestroyed()
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (data: any) => {
         this.visibleError = false;
@@ -78,7 +79,7 @@ export class GenresComponent {
   save() {
     if (this.genre.idMusicGenre === 0) {
       this.genresService.addGenre(this.genre).pipe(
-        takeUntilDestroyed()
+        takeUntilDestroyed(this.destroyRef)
       ).subscribe({
         next: (data) => {
           this.visibleError = false;
@@ -95,7 +96,7 @@ export class GenresComponent {
       });
     } else {
       this.genresService.updateGenre(this.genre).pipe(
-        takeUntilDestroyed()
+        takeUntilDestroyed(this.destroyRef)
       ).subscribe({
         next: (data) => {
           this.visibleError = false;
@@ -138,7 +139,7 @@ export class GenresComponent {
 
   deleteGenre(id: number) {
     this.genresService.deleteGenre(id).pipe(
-      takeUntilDestroyed()
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (data) => {
         this.visibleError = false;
